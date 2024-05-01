@@ -1,0 +1,1647 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        #map {
+            width: 693px;
+            height: 772px;
+        }
+        </style>
+        <title>Clusters of Ash (Fraxinus spp.) Among Boise's Managed Street and Park Trees, Indicating Potential Future Spread of the Invasive Pest, Emerald Ash Borer (Agrilus planipennis)</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1.js"></script>
+        <script src="data/BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2.js"></script>
+        <script src="data/Fraxinus_Selected_Genus_Managedtreescopy_3.js"></script>
+        <script src="data/PARK_trees_only_4.js"></script>
+        <script src="data/Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[43.60082121261017,-116.23795649126535],[43.64276340393737,-116.18596237725227]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'feet',
+            secondaryLengthUnit: 'miles',
+            primaryAreaUnit: 'sqfeet',
+            secondaryAreaUnit: 'sqmiles'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleTerrain_0');
+        map.getPane('pane_GoogleTerrain_0').style.zIndex = 400;
+        var layer_GoogleTerrain_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleTerrain_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleTerrain_0;
+        map.addLayer(layer_GoogleTerrain_0);
+        function pop_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ParkID</th>\
+                        <td class="visible-with-data" id="ParkID">' + (feature.properties['ParkID'] !== null ? autolinker.link(feature.properties['ParkID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Site_Name</th>\
+                        <td class="visible-with-data" id="Site_Name">' + (feature.properties['Site_Name'] !== null ? autolinker.link(feature.properties['Site_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Landowner</th>\
+                        <td class="visible-with-data" id="Landowner">' + (feature.properties['Landowner'] !== null ? autolinker.link(feature.properties['Landowner'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Address</th>\
+                        <td class="visible-with-data" id="Address">' + (feature.properties['Address'] !== null ? autolinker.link(feature.properties['Address'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Classic</th>\
+                        <td class="visible-with-data" id="Classic">' + (feature.properties['Classic'] !== null ? autolinker.link(feature.properties['Classic'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Park_Type</th>\
+                        <td class="visible-with-data" id="Park_Type">' + (feature.properties['Park_Type'] !== null ? autolinker.link(feature.properties['Park_Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mgt_Priorty</th>\
+                        <td class="visible-with-data" id="Mgt_Priorty">' + (feature.properties['Mgt_Priorty'] !== null ? autolinker.link(feature.properties['Mgt_Priorty'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Park_Planning_Area</th>\
+                        <td class="visible-with-data" id="Park_Planning_Area">' + (feature.properties['Park_Planning_Area'] !== null ? autolinker.link(feature.properties['Park_Planning_Area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mgt_Agency_Name</th>\
+                        <td class="visible-with-data" id="Mgt_Agency_Name">' + (feature.properties['Mgt_Agency_Name'] !== null ? autolinker.link(feature.properties['Mgt_Agency_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Installation_Year</th>\
+                        <td class="visible-with-data" id="Installation_Year">' + (feature.properties['Installation_Year'] !== null ? autolinker.link(feature.properties['Installation_Year'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Acreage</th>\
+                        <td class="visible-with-data" id="Acreage">' + (feature.properties['Acreage'] !== null ? autolinker.link(feature.properties['Acreage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Park_Link</th>\
+                        <td class="visible-with-data" id="Park_Link">' + (feature.properties['Park_Link'] !== null ? autolinker.link(feature.properties['Park_Link'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Park_Status</th>\
+                        <td class="visible-with-data" id="Park_Status">' + (feature.properties['Park_Status'] !== null ? autolinker.link(feature.properties['Park_Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        var pattern_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1_0 = new L.StripePattern({
+            weight: 0.3,
+            spaceWeight: 2.0,
+            color: '#e513d0',
+            opacity: 1.0,
+            spaceOpacity: 0,
+            angle: 225
+        });
+        pattern_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1_0.addTo(map);
+        function style_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1_0() {
+            return {
+                pane: 'pane_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1',
+                stroke: false,
+                fillOpacity: 1,
+                fillPattern: pattern_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1_0,
+                interactive: true,
+            }
+        }
+        function style_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1_1() {
+            return {
+                pane: 'pane_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1',
+                opacity: 1,
+                color: 'rgba(229,19,208,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1');
+        map.getPane('pane_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1').style.zIndex = 401;
+        map.getPane('pane_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1').style['mix-blend-mode'] = 'normal';
+        var layer_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1 = new L.geoJson.multiStyle(json_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1',
+            layerName: 'layer_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1',
+            pane: 'pane_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1',
+            onEachFeature: pop_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1,
+            styles: [style_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1_0,style_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1_1,]
+        });
+        bounds_group.addLayer(layer_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1);
+        map.addLayer(layer_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1);
+        function pop_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Status</th>\
+                        <td class="visible-with-data" id="Status">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Common_Name</th>\
+                        <td class="visible-with-data" id="Common_Name">' + (feature.properties['Common_Name'] !== null ? autolinker.link(feature.properties['Common_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Genus</th>\
+                        <td class="visible-with-data" id="Genus">' + (feature.properties['Genus'] !== null ? autolinker.link(feature.properties['Genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Species</th>\
+                        <td class="visible-with-data" id="Species">' + (feature.properties['Species'] !== null ? autolinker.link(feature.properties['Species'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Installation_Date</th>\
+                        <td class="visible-with-data" id="Installation_Date">' + (feature.properties['Installation_Date'] !== null ? autolinker.link(feature.properties['Installation_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ON_STREET</th>\
+                        <td class="visible-with-data" id="ON_STREET">' + (feature.properties['ON_STREET'] !== null ? autolinker.link(feature.properties['ON_STREET'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">FullAddress</th>\
+                        <td class="visible-with-data" id="FullAddress">' + (feature.properties['FullAddress'] !== null ? autolinker.link(feature.properties['FullAddress'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Condition</th>\
+                        <td class="visible-with-data" id="Tree_Condition">' + (feature.properties['Tree_Condition'] !== null ? autolinker.link(feature.properties['Tree_Condition'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Diameter</th>\
+                        <td class="visible-with-data" id="Tree_Diameter">' + (feature.properties['Tree_Diameter'] !== null ? autolinker.link(feature.properties['Tree_Diameter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Site_Type</th>\
+                        <td class="visible-with-data" id="Tree_Site_Type">' + (feature.properties['Tree_Site_Type'] !== null ? autolinker.link(feature.properties['Tree_Site_Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pruned_Verify_Date</th>\
+                        <td class="visible-with-data" id="Pruned_Verify_Date">' + (feature.properties['Pruned_Verify_Date'] !== null ? autolinker.link(feature.properties['Pruned_Verify_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Removal_Date</th>\
+                        <td class="visible-with-data" id="Removal_Date">' + (feature.properties['Removal_Date'] !== null ? autolinker.link(feature.properties['Removal_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2_0() {
+            return {
+                pane: 'pane_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(19,136,46,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2');
+        map.getPane('pane_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2').style.zIndex = 402;
+        map.getPane('pane_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2').style['mix-blend-mode'] = 'normal';
+        var layer_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2 = new L.geoJson(json_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2',
+            layerName: 'layer_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2',
+            pane: 'pane_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2',
+            onEachFeature: pop_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2);
+        map.addLayer(layer_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2);
+        function pop_Fraxinus_Selected_Genus_Managedtreescopy_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Status</th>\
+                        <td class="visible-with-data" id="Status">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Common_Name</th>\
+                        <td class="visible-with-data" id="Common_Name">' + (feature.properties['Common_Name'] !== null ? autolinker.link(feature.properties['Common_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Genus</th>\
+                        <td class="visible-with-data" id="Genus">' + (feature.properties['Genus'] !== null ? autolinker.link(feature.properties['Genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Species</th>\
+                        <td class="visible-with-data" id="Species">' + (feature.properties['Species'] !== null ? autolinker.link(feature.properties['Species'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Installation_Date</th>\
+                        <td class="visible-with-data" id="Installation_Date">' + (feature.properties['Installation_Date'] !== null ? autolinker.link(feature.properties['Installation_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ON_STREET</th>\
+                        <td class="visible-with-data" id="ON_STREET">' + (feature.properties['ON_STREET'] !== null ? autolinker.link(feature.properties['ON_STREET'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">FullAddress</th>\
+                        <td class="visible-with-data" id="FullAddress">' + (feature.properties['FullAddress'] !== null ? autolinker.link(feature.properties['FullAddress'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Condition</th>\
+                        <td class="visible-with-data" id="Tree_Condition">' + (feature.properties['Tree_Condition'] !== null ? autolinker.link(feature.properties['Tree_Condition'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Diameter</th>\
+                        <td class="visible-with-data" id="Tree_Diameter">' + (feature.properties['Tree_Diameter'] !== null ? autolinker.link(feature.properties['Tree_Diameter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Site_Type</th>\
+                        <td class="visible-with-data" id="Tree_Site_Type">' + (feature.properties['Tree_Site_Type'] !== null ? autolinker.link(feature.properties['Tree_Site_Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pruned_Verify_Date</th>\
+                        <td class="visible-with-data" id="Pruned_Verify_Date">' + (feature.properties['Pruned_Verify_Date'] !== null ? autolinker.link(feature.properties['Pruned_Verify_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Removal_Date</th>\
+                        <td>' + (feature.properties['Removal_Date'] !== null ? autolinker.link(feature.properties['Removal_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Fraxinus_Selected_Genus_Managedtreescopy_3_0() {
+            return {
+                pane: 'pane_Fraxinus_Selected_Genus_Managedtreescopy_3',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Fraxinus_Selected_Genus_Managedtreescopy_3');
+        map.getPane('pane_Fraxinus_Selected_Genus_Managedtreescopy_3').style.zIndex = 403;
+        map.getPane('pane_Fraxinus_Selected_Genus_Managedtreescopy_3').style['mix-blend-mode'] = 'normal';
+        var layer_Fraxinus_Selected_Genus_Managedtreescopy_3 = new L.geoJson(json_Fraxinus_Selected_Genus_Managedtreescopy_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Fraxinus_Selected_Genus_Managedtreescopy_3',
+            layerName: 'layer_Fraxinus_Selected_Genus_Managedtreescopy_3',
+            pane: 'pane_Fraxinus_Selected_Genus_Managedtreescopy_3',
+            onEachFeature: pop_Fraxinus_Selected_Genus_Managedtreescopy_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Fraxinus_Selected_Genus_Managedtreescopy_3_0(feature));
+            },
+        });
+        var cluster_Fraxinus_Selected_Genus_Managedtreescopy_3 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Fraxinus_Selected_Genus_Managedtreescopy_3.addLayer(layer_Fraxinus_Selected_Genus_Managedtreescopy_3);
+
+        bounds_group.addLayer(layer_Fraxinus_Selected_Genus_Managedtreescopy_3);
+        cluster_Fraxinus_Selected_Genus_Managedtreescopy_3.addTo(map);
+        function pop_PARK_trees_only_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Status</th>\
+                        <td class="visible-with-data" id="Status">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Common_Name</th>\
+                        <td class="visible-with-data" id="Common_Name">' + (feature.properties['Common_Name'] !== null ? autolinker.link(feature.properties['Common_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Species</th>\
+                        <td class="visible-with-data" id="Species">' + (feature.properties['Species'] !== null ? autolinker.link(feature.properties['Species'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Genus</th>\
+                        <td class="visible-with-data" id="Genus">' + (feature.properties['Genus'] !== null ? autolinker.link(feature.properties['Genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Installation_Date</th>\
+                        <td class="visible-with-data" id="Installation_Date">' + (feature.properties['Installation_Date'] !== null ? autolinker.link(feature.properties['Installation_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Park</th>\
+                        <td class="visible-with-data" id="Park">' + (feature.properties['Park'] !== null ? autolinker.link(feature.properties['Park'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Condition</th>\
+                        <td class="visible-with-data" id="Tree_Condition">' + (feature.properties['Tree_Condition'] !== null ? autolinker.link(feature.properties['Tree_Condition'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Diameter</th>\
+                        <td class="visible-with-data" id="Tree_Diameter">' + (feature.properties['Tree_Diameter'] !== null ? autolinker.link(feature.properties['Tree_Diameter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Site_Type</th>\
+                        <td class="visible-with-data" id="Tree_Site_Type">' + (feature.properties['Tree_Site_Type'] !== null ? autolinker.link(feature.properties['Tree_Site_Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ROW_Width</th>\
+                        <td class="visible-with-data" id="ROW_Width">' + (feature.properties['ROW_Width'] !== null ? autolinker.link(feature.properties['ROW_Width'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">MemorialID</th>\
+                        <td class="visible-with-data" id="MemorialID">' + (feature.properties['MemorialID'] !== null ? autolinker.link(feature.properties['MemorialID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_District</th>\
+                        <td class="visible-with-data" id="Tree_District">' + (feature.properties['Tree_District'] !== null ? autolinker.link(feature.properties['Tree_District'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pruned_Verify_Date</th>\
+                        <td class="visible-with-data" id="Pruned_Verify_Date">' + (feature.properties['Pruned_Verify_Date'] !== null ? autolinker.link(feature.properties['Pruned_Verify_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Removal_Date</th>\
+                        <td class="visible-with-data" id="Removal_Date">' + (feature.properties['Removal_Date'] !== null ? autolinker.link(feature.properties['Removal_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_PARK_trees_only_4_0() {
+            return {
+                pane: 'pane_PARK_trees_only_4',
+                radius: 3.2,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(44,143,33,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_PARK_trees_only_4');
+        map.getPane('pane_PARK_trees_only_4').style.zIndex = 404;
+        map.getPane('pane_PARK_trees_only_4').style['mix-blend-mode'] = 'normal';
+        var layer_PARK_trees_only_4 = new L.geoJson(json_PARK_trees_only_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PARK_trees_only_4',
+            layerName: 'layer_PARK_trees_only_4',
+            pane: 'pane_PARK_trees_only_4',
+            onEachFeature: pop_PARK_trees_only_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_PARK_trees_only_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PARK_trees_only_4);
+        map.addLayer(layer_PARK_trees_only_4);
+        function pop_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Status</th>\
+                        <td class="visible-with-data" id="Status">' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Common_Name</th>\
+                        <td class="visible-with-data" id="Common_Name">' + (feature.properties['Common_Name'] !== null ? autolinker.link(feature.properties['Common_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Species</th>\
+                        <td class="visible-with-data" id="Species">' + (feature.properties['Species'] !== null ? autolinker.link(feature.properties['Species'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Genus</th>\
+                        <td class="visible-with-data" id="Genus">' + (feature.properties['Genus'] !== null ? autolinker.link(feature.properties['Genus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Installation_Date</th>\
+                        <td class="visible-with-data" id="Installation_Date">' + (feature.properties['Installation_Date'] !== null ? autolinker.link(feature.properties['Installation_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Park</th>\
+                        <td class="visible-with-data" id="Park">' + (feature.properties['Park'] !== null ? autolinker.link(feature.properties['Park'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Condition</th>\
+                        <td class="visible-with-data" id="Tree_Condition">' + (feature.properties['Tree_Condition'] !== null ? autolinker.link(feature.properties['Tree_Condition'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Diameter</th>\
+                        <td class="visible-with-data" id="Tree_Diameter">' + (feature.properties['Tree_Diameter'] !== null ? autolinker.link(feature.properties['Tree_Diameter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_Site_Type</th>\
+                        <td class="visible-with-data" id="Tree_Site_Type">' + (feature.properties['Tree_Site_Type'] !== null ? autolinker.link(feature.properties['Tree_Site_Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ROW_Width</th>\
+                        <td class="visible-with-data" id="ROW_Width">' + (feature.properties['ROW_Width'] !== null ? autolinker.link(feature.properties['ROW_Width'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">MemorialID</th>\
+                        <td class="visible-with-data" id="MemorialID">' + (feature.properties['MemorialID'] !== null ? autolinker.link(feature.properties['MemorialID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree_District</th>\
+                        <td class="visible-with-data" id="Tree_District">' + (feature.properties['Tree_District'] !== null ? autolinker.link(feature.properties['Tree_District'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pruned_Verify_Date</th>\
+                        <td class="visible-with-data" id="Pruned_Verify_Date">' + (feature.properties['Pruned_Verify_Date'] !== null ? autolinker.link(feature.properties['Pruned_Verify_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Removal_Date</th>\
+                        <td class="visible-with-data" id="Removal_Date">' + (feature.properties['Removal_Date'] !== null ? autolinker.link(feature.properties['Removal_Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5_0() {
+            return {
+                pane: 'pane_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5',
+                radius: 6.4,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5');
+        map.getPane('pane_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5').style.zIndex = 405;
+        map.getPane('pane_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5').style['mix-blend-mode'] = 'normal';
+        var layer_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5 = new L.geoJson(json_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5',
+            layerName: 'layer_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5',
+            pane: 'pane_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5',
+            onEachFeature: pop_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5_0(feature));
+            },
+        });
+        var cluster_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5.addLayer(layer_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5);
+
+        bounds_group.addLayer(layer_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5);
+        cluster_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5.addTo(map);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Clusters of Ash (Fraxinus spp.) Among Boise\'s Managed Street and Park Trees, Indicating Potential Future Spread of the Invasive Pest, Emerald Ash Borer (Agrilus planipennis)</h2>';
+            };
+            title.addTo(map);
+            var abstract = new L.Control({'position':'bottomright'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control abstract');
+                this._div.id = 'abstract'
+                    this._div.setAttribute("onmouseenter", "abstract.show()");
+                    this._div.setAttribute("onmouseleave", "abstract.hide()");
+                    this.hide();
+                    return this._div;
+                };
+                abstract.hide = function () {
+                    this._div.classList.remove("abstractUncollapsed");
+                    this._div.classList.add("abstract");
+                    this._div.innerHTML = 'i'
+                }
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = 'The emerald ash borer, Agrilus planipennis, is an invasive beetle originally from Asia. It lays its eggs in the cracks of ash tree bark. After hatching, the larvae live under the bark, eating away at the tree for one to two years before turning into adult beetles.<br />The insect was first found in Michigan, in 2002, though it may have been in the U.S. since the late 1980s. In its natural habitat, there are typically factors that keep its population in check, such as resistant trees, predators, and parasitoid wasps. However, outside its native range, its numbers can rapidly increase, causing significant damage.<br />Once the emerald ash borer establishes itself in an area, most ash trees there will perish within approximately 10 years if no action is taken to manage it. Green ash and black ash are most susceptible. Although white ash displays some resistance, it often succumbs once other species are affected. Blue ash, on the other hand, poses a greater challenge for the insect due to its high tannin content, rendering its leaves unappealing. Nevertheless, the emerald ash borer poses a threat to the entire North American genus Fraxinus, having already decimated millions of trees and endangering the vast majority of the 8.7 billion ash trees across the continent.<br />The burden of managing these trees often falls on homeowners or local authorities. For municipalities, removing large numbers of dead or infested trees at once can be financially prohibitive. Therefore, a common approach is to slow down the rate of tree mortality by removing already infested trees and treating others with insecticides. This buys time for local governments to plan, remove, and replace affected trees gradually, ultimately saving money. For instance, treating the trees over a decade would cost about $10.7 billion in urban areas across 25 states, whereas replacing them all at once would require approximately $25 billion (with some estimates reaching as high as $60 billion). In Boise, 14% of managed street trees are ash trees, and 10% of park trees are ash. No new ash trees are being planted in Boise, even though the emerald ash borer has not been detected in Idaho yet.<br /><br />Data source: https://city-of-boise.opendata.arcgis.com/maps/boise::parks-and-recreation-managed-park-and-street-trees/about ';
+            };
+            abstract.addTo(map);
+        var baseMaps = {};
+        var overlaysTree = [
+            {label: '<img src="legend/Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5.png" /> Park_trees_only_Fraxinus_Selected_only — park_trees_only', layer: cluster_Park_trees_only_Fraxinus_Selected_onlypark_trees_only_5},
+            {label: '<img src="legend/PARK_trees_only_4.png" /> PARK_trees_only', layer: layer_PARK_trees_only_4},
+            {label: '<img src="legend/Fraxinus_Selected_Genus_Managedtreescopy_3.png" /> Fraxinus_Selected_Genus_Managedtrees copy', layer: cluster_Fraxinus_Selected_Genus_Managedtreescopy_3},
+            {label: '<img src="legend/BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2.png" /> BPR_Park_And_Street_Trees_City_Boise_Data — Street_Trees', layer: layer_BPR_Park_And_Street_Trees_City_Boise_DataStreet_Trees_2},
+            {label: '<img src="legend/Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1.png" /> Boise_Parks_and_Reserves_Poly_ — Parks_and_Reserves__polygons_', layer: layer_Boise_Parks_and_Reserves_Poly_Parks_and_Reserves__polygons__1},
+            {label: "Google Terrain", layer: layer_GoogleTerrain_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Genus": "str","Species": "str","Common_Name": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Genus = document.createElement('div');
+            div_Genus.id = "div_Genus";
+            div_Genus.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Genus);
+            sel_Genus = document.createElement('select');
+            sel_Genus.multiple = true;
+            sel_Genus.size = 10;
+            sel_Genus.id = "sel_Genus";
+            var Genus_options_str = "<option value='' unselected></option>";
+            sel_Genus.onchange = function(){filterFunc()};
+            Genus_options_str  += '<option value="NULL">NULL</option>';
+            Genus_options_str  += '<option value="ABIES">ABIES</option>';
+            Genus_options_str  += '<option value="ACER">ACER</option>';
+            Genus_options_str  += '<option value="AESCULUS">AESCULUS</option>';
+            Genus_options_str  += '<option value="AILANTHUS">AILANTHUS</option>';
+            Genus_options_str  += '<option value="ALNUS">ALNUS</option>';
+            Genus_options_str  += '<option value="AMELANCHIER">AMELANCHIER</option>';
+            Genus_options_str  += '<option value="BETULA">BETULA</option>';
+            Genus_options_str  += '<option value="CALOCEDRUS">CALOCEDRUS</option>';
+            Genus_options_str  += '<option value="CARPINUS">CARPINUS</option>';
+            Genus_options_str  += '<option value="CARYA">CARYA</option>';
+            Genus_options_str  += '<option value="CASTANEA">CASTANEA</option>';
+            Genus_options_str  += '<option value="CATALPA">CATALPA</option>';
+            Genus_options_str  += '<option value="CEDRUS">CEDRUS</option>';
+            Genus_options_str  += '<option value="CELTIS">CELTIS</option>';
+            Genus_options_str  += '<option value="CERCIDIPHYLLUM">CERCIDIPHYLLUM</option>';
+            Genus_options_str  += '<option value="CERCIS">CERCIS</option>';
+            Genus_options_str  += '<option value="CHAMAECYPARIS">CHAMAECYPARIS</option>';
+            Genus_options_str  += '<option value="CLADRASTIS">CLADRASTIS</option>';
+            Genus_options_str  += '<option value="CORNUS">CORNUS</option>';
+            Genus_options_str  += '<option value="CORYLUS">CORYLUS</option>';
+            Genus_options_str  += '<option value="COTINUS">COTINUS</option>';
+            Genus_options_str  += '<option value="CRATAEGUS">CRATAEGUS</option>';
+            Genus_options_str  += '<option value="DELTOIDES">DELTOIDES</option>';
+            Genus_options_str  += '<option value="DIOSPYROS">DIOSPYROS</option>';
+            Genus_options_str  += '<option value="ELAEAGNUS">ELAEAGNUS</option>';
+            Genus_options_str  += '<option value="EUCOMMIA">EUCOMMIA</option>';
+            Genus_options_str  += '<option value="FAGUS">FAGUS</option>';
+            Genus_options_str  += '<option value="FRAXINUS">FRAXINUS</option>';
+            Genus_options_str  += '<option value="GINKGO">GINKGO</option>';
+            Genus_options_str  += '<option value="GLEDITSIA">GLEDITSIA</option>';
+            Genus_options_str  += '<option value="GYMNOCLADUS">GYMNOCLADUS</option>';
+            Genus_options_str  += '<option value="HIBISCUS">HIBISCUS</option>';
+            Genus_options_str  += '<option value="JUGLANS">JUGLANS</option>';
+            Genus_options_str  += '<option value="JUNIPERUS">JUNIPERUS</option>';
+            Genus_options_str  += '<option value="KOELREUTERIA">KOELREUTERIA</option>';
+            Genus_options_str  += '<option value="LABURNUM">LABURNUM</option>';
+            Genus_options_str  += '<option value="LARIX">LARIX</option>';
+            Genus_options_str  += '<option value="LEITNERIA">LEITNERIA</option>';
+            Genus_options_str  += '<option value="LIQUIDAMBAR">LIQUIDAMBAR</option>';
+            Genus_options_str  += '<option value="LIRIODENDRON">LIRIODENDRON</option>';
+            Genus_options_str  += '<option value="MAACKIA">MAACKIA</option>';
+            Genus_options_str  += '<option value="MACLURA">MACLURA</option>';
+            Genus_options_str  += '<option value="MAGNOLIA">MAGNOLIA</option>';
+            Genus_options_str  += '<option value="MALUS">MALUS</option>';
+            Genus_options_str  += '<option value="METASEQUOIA">METASEQUOIA</option>';
+            Genus_options_str  += '<option value="MORUS">MORUS</option>';
+            Genus_options_str  += '<option value="NYSSA">NYSSA</option>';
+            Genus_options_str  += '<option value="OSTRYA">OSTRYA</option>';
+            Genus_options_str  += '<option value="PARROTIA">PARROTIA</option>';
+            Genus_options_str  += '<option value="PHELLODENDRON">PHELLODENDRON</option>';
+            Genus_options_str  += '<option value="PICEA">PICEA</option>';
+            Genus_options_str  += '<option value="PINUS">PINUS</option>';
+            Genus_options_str  += '<option value="PLATANUS">PLATANUS</option>';
+            Genus_options_str  += '<option value="POPULUS">POPULUS</option>';
+            Genus_options_str  += '<option value="PRUNUS">PRUNUS</option>';
+            Genus_options_str  += '<option value="PSEUDOTSUGA">PSEUDOTSUGA</option>';
+            Genus_options_str  += '<option value="PTEROSTYRAX">PTEROSTYRAX</option>';
+            Genus_options_str  += '<option value="PYRUS">PYRUS</option>';
+            Genus_options_str  += '<option value="QUERCUS">QUERCUS</option>';
+            Genus_options_str  += '<option value="RHUS">RHUS</option>';
+            Genus_options_str  += '<option value="ROBINIA">ROBINIA</option>';
+            Genus_options_str  += '<option value="SALIX">SALIX</option>';
+            Genus_options_str  += '<option value="SASSAFRAS">SASSAFRAS</option>';
+            Genus_options_str  += '<option value="SEQUOIA">SEQUOIA</option>';
+            Genus_options_str  += '<option value="SEQUOIADENDRON">SEQUOIADENDRON</option>';
+            Genus_options_str  += '<option value="SORBUS">SORBUS</option>';
+            Genus_options_str  += '<option value="STYPHNOLOBIUM">STYPHNOLOBIUM</option>';
+            Genus_options_str  += '<option value="SYRINGA">SYRINGA</option>';
+            Genus_options_str  += '<option value="TAXODIUM">TAXODIUM</option>';
+            Genus_options_str  += '<option value="THUJA">THUJA</option>';
+            Genus_options_str  += '<option value="TILIA">TILIA</option>';
+            Genus_options_str  += '<option value="ULMUS">ULMUS</option>';
+            Genus_options_str  += '<option value="ZELKOVA">ZELKOVA</option>';
+            sel_Genus.innerHTML = Genus_options_str;
+            div_Genus.appendChild(sel_Genus);
+            var lab_Genus = document.createElement('div');
+            lab_Genus.innerHTML = 'Genus';
+            lab_Genus.className = 'filterlabel';
+            div_Genus.appendChild(lab_Genus);
+            var reset_Genus = document.createElement('div');
+            reset_Genus.innerHTML = 'clear filter';
+            reset_Genus.className = 'filterlabel';
+            reset_Genus.onclick = function() {
+                var options = document.getElementById("sel_Genus").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Genus.appendChild(reset_Genus);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Species = document.createElement('div');
+            div_Species.id = "div_Species";
+            div_Species.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Species);
+            sel_Species = document.createElement('select');
+            sel_Species.multiple = true;
+            sel_Species.size = 10;
+            sel_Species.id = "sel_Species";
+            var Species_options_str = "<option value='' unselected></option>";
+            sel_Species.onchange = function(){filterFunc()};
+            Species_options_str  += '<option value="NULL">NULL</option>';
+            Species_options_str  += '<option value="ABIES">ABIES</option>';
+            Species_options_str  += '<option value="ACUMINATA">ACUMINATA</option>';
+            Species_options_str  += '<option value="ACUTISSIMA">ACUTISSIMA</option>';
+            Species_options_str  += '<option value="ALBA">ALBA</option>';
+            Species_options_str  += '<option value="ALBIDUM">ALBIDUM</option>';
+            Species_options_str  += '<option value="ALNIFOLIA">ALNIFOLIA</option>';
+            Species_options_str  += '<option value="ALTISSIMA">ALTISSIMA</option>';
+            Species_options_str  += '<option value="AMERICANA">AMERICANA</option>';
+            Species_options_str  += '<option value="AMURENSE">AMURENSE</option>';
+            Species_options_str  += '<option value="AMURENSIS">AMURENSIS</option>';
+            Species_options_str  += '<option value="ANGUSTIFOLIA">ANGUSTIFOLIA</option>';
+            Species_options_str  += '<option value="ARBOREA">ARBOREA</option>';
+            Species_options_str  += '<option value="ARISTATA">ARISTATA</option>';
+            Species_options_str  += '<option value="ARMENIACA">ARMENIACA</option>';
+            Species_options_str  += '<option value="ATLANTICA">ATLANTICA</option>';
+            Species_options_str  += '<option value="AUCUPARIA">AUCUPARIA</option>';
+            Species_options_str  += '<option value="BABYLONICA">BABYLONICA</option>';
+            Species_options_str  += '<option value="BABYLONICA PEKINENSIS">BABYLONICA PEKINENSIS</option>';
+            Species_options_str  += '<option value="BETULUS">BETULUS</option>';
+            Species_options_str  += '<option value="BICOLOR">BICOLOR</option>';
+            Species_options_str  += '<option value="BIGNONIOIDES">BIGNONIOIDES</option>';
+            Species_options_str  += '<option value="BILOBA">BILOBA</option>';
+            Species_options_str  += '<option value="BORISII REGIS">BORISII REGIS</option>';
+            Species_options_str  += '<option value="BUERGERIANUM">BUERGERIANUM</option>';
+            Species_options_str  += '<option value="CALLERYANA">CALLERYANA</option>';
+            Species_options_str  += '<option value="CAMPESTRE">CAMPESTRE</option>';
+            Species_options_str  += '<option value="CANADENSIS">CANADENSIS</option>';
+            Species_options_str  += '<option value="CAROLINIANA">CAROLINIANA</option>';
+            Species_options_str  += '<option value="CARPINIFOLIA X PARVIFOLIA HYBRID">CARPINIFOLIA X PARVIFOLIA HYBRID</option>';
+            Species_options_str  += '<option value="CERASIFERA">CERASIFERA</option>';
+            Species_options_str  += '<option value="CERRIS">CERRIS</option>';
+            Species_options_str  += '<option value="CHINENSIS">CHINENSIS</option>';
+            Species_options_str  += '<option value="COCCINEA">COCCINEA</option>';
+            Species_options_str  += '<option value="COGGYGRIA">COGGYGRIA</option>';
+            Species_options_str  += '<option value="COLURNA">COLURNA</option>';
+            Species_options_str  += '<option value="COMMUNIS">COMMUNIS</option>';
+            Species_options_str  += '<option value="CONCOLOR">CONCOLOR</option>';
+            Species_options_str  += '<option value="CONTORTA">CONTORTA</option>';
+            Species_options_str  += '<option value="CORDATA">CORDATA</option>';
+            Species_options_str  += '<option value="COULTERI">COULTERI</option>';
+            Species_options_str  += '<option value="CRUS-GALLI">CRUS-GALLI</option>';
+            Species_options_str  += '<option value="DAVIDIANA X JAPONICA HYBRID">DAVIDIANA X JAPONICA HYBRID</option>';
+            Species_options_str  += '<option value="DECIDUA">DECIDUA</option>';
+            Species_options_str  += '<option value="DECURRENS">DECURRENS</option>';
+            Species_options_str  += '<option value="DELTOIDES">DELTOIDES</option>';
+            Species_options_str  += '<option value="DENTATA">DENTATA</option>';
+            Species_options_str  += '<option value="DENUDATA">DENUDATA</option>';
+            Species_options_str  += '<option value="DEODARA">DEODARA</option>';
+            Species_options_str  += '<option value="DIOICUS">DIOICUS</option>';
+            Species_options_str  += '<option value="DISTICHUM">DISTICHUM</option>';
+            Species_options_str  += '<option value="DOMESTICA">DOMESTICA</option>';
+            Species_options_str  += '<option value="EDULIS">EDULIS</option>';
+            Species_options_str  += '<option value="ELEGANS">ELEGANS</option>';
+            Species_options_str  += '<option value="ELLIPSOIDALIS">ELLIPSOIDALIS</option>';
+            Species_options_str  += '<option value="ENGELMANNII">ENGELMANNII</option>';
+            Species_options_str  += '<option value="EXCELSIOR">EXCELSIOR</option>';
+            Species_options_str  += '<option value="FALCATA">FALCATA</option>';
+            Species_options_str  += '<option value="FLEXILIS">FLEXILIS</option>';
+            Species_options_str  += '<option value="FLORIDA">FLORIDA</option>';
+            Species_options_str  += '<option value="FLORIDANA">FLORIDANA</option>';
+            Species_options_str  += '<option value="FRAINETTO">FRAINETTO</option>';
+            Species_options_str  += '<option value="GAMBELII">GAMBELII</option>';
+            Species_options_str  += '<option value="GIGANTEUM">GIGANTEUM</option>';
+            Species_options_str  += '<option value="GINNALA">GINNALA</option>';
+            Species_options_str  += '<option value="GLABRA">GLABRA</option>';
+            Species_options_str  += '<option value="GLABRUM">GLABRUM</option>';
+            Species_options_str  += '<option value="GLANDULIFERA">GLANDULIFERA</option>';
+            Species_options_str  += '<option value="GLAUCA">GLAUCA</option>';
+            Species_options_str  += '<option value="GLUTINOSA">GLUTINOSA</option>';
+            Species_options_str  += '<option value="GLYPTOSTROBOIDES">GLYPTOSTROBOIDES</option>';
+            Species_options_str  += '<option value="GRANDIDENTATA">GRANDIDENTATA</option>';
+            Species_options_str  += '<option value="GRANDIDENTATUM">GRANDIDENTATUM</option>';
+            Species_options_str  += '<option value="GRANDIFLORA">GRANDIFLORA</option>';
+            Species_options_str  += '<option value="GRANDIFOLIA">GRANDIFOLIA</option>';
+            Species_options_str  += '<option value="GRISEUM">GRISEUM</option>';
+            Species_options_str  += '<option value="HELDREICHII">HELDREICHII</option>';
+            Species_options_str  += '<option value="HIPPOCASTANUM">HIPPOCASTANUM</option>';
+            Species_options_str  += '<option value="HISPIDA">HISPIDA</option>';
+            Species_options_str  += '<option value="IMBRICARIA">IMBRICARIA</option>';
+            Species_options_str  += '<option value="INCANA">INCANA</option>';
+            Species_options_str  += '<option value="IOENSIS">IOENSIS</option>';
+            Species_options_str  += '<option value="JAPONICA">JAPONICA</option>';
+            Species_options_str  += '<option value="JAPONICUM">JAPONICUM</option>';
+            Species_options_str  += '<option value="KENTUKEA">KENTUKEA</option>';
+            Species_options_str  += '<option value="LAEVIGATA">LAEVIGATA</option>';
+            Species_options_str  += '<option value="LAURIFOLIA">LAURIFOLIA</option>';
+            Species_options_str  += '<option value="LAWSONIANA">LAWSONIANA</option>';
+            Species_options_str  += '<option value="LIBANI">LIBANI</option>';
+            Species_options_str  += '<option value="LYRATA">LYRATA</option>';
+            Species_options_str  += '<option value="MAACKII">MAACKII</option>';
+            Species_options_str  += '<option value="MACROCARPA">MACROCARPA</option>';
+            Species_options_str  += '<option value="MACROCARPA X GAMBELLI">MACROCARPA X GAMBELLI</option>';
+            Species_options_str  += '<option value="MACROCARPA X ROBUR">MACROCARPA X ROBUR</option>';
+            Species_options_str  += '<option value="MACROPHYLLUM">MACROPHYLLUM</option>';
+            Species_options_str  += '<option value="MANDSHURICA">MANDSHURICA</option>';
+            Species_options_str  += '<option value="MARSHALLII">MARSHALLII</option>';
+            Species_options_str  += '<option value="MATSUDANA">MATSUDANA</option>';
+            Species_options_str  += '<option value="MAXIMOWICZIANA">MAXIMOWICZIANA</option>';
+            Species_options_str  += '<option value="MENZIESII">MENZIESII</option>';
+            Species_options_str  += '<option value="MIYABEI">MIYABEI</option>';
+            Species_options_str  += '<option value="MONGOLICA">MONGOLICA</option>';
+            Species_options_str  += '<option value="MONOGYNA">MONOGYNA</option>';
+            Species_options_str  += '<option value="MONTICOLA">MONTICOLA</option>';
+            Species_options_str  += '<option value="MUEHLENBERGII">MUEHLENBERGII</option>';
+            Species_options_str  += '<option value="MUGO">MUGO</option>';
+            Species_options_str  += '<option value="NEGUNDO">NEGUNDO</option>';
+            Species_options_str  += '<option value="NIGRA">NIGRA</option>';
+            Species_options_str  += '<option value="NIGRUM">NIGRUM</option>';
+            Species_options_str  += '<option value="NITIDA">NITIDA</option>';
+            Species_options_str  += '<option value="NOOTKATENSIS">NOOTKATENSIS</option>';
+            Species_options_str  += '<option value="NORDMANNIANA">NORDMANNIANA</option>';
+            Species_options_str  += '<option value="NUTTALLII">NUTTALLII</option>';
+            Species_options_str  += '<option value="OBOVATUS">OBOVATUS</option>';
+            Species_options_str  += '<option value="OCCIDENTALIS">OCCIDENTALIS</option>';
+            Species_options_str  += '<option value="OMORIKA">OMORIKA</option>';
+            Species_options_str  += '<option value="ORIENTALIS">ORIENTALIS</option>';
+            Species_options_str  += '<option value="OVATA">OVATA</option>';
+            Species_options_str  += '<option value="OXYCARPA">OXYCARPA</option>';
+            Species_options_str  += '<option value="PADUS">PADUS</option>';
+            Species_options_str  += '<option value="PALMATUM">PALMATUM</option>';
+            Species_options_str  += '<option value="PALUSTRIS">PALUSTRIS</option>';
+            Species_options_str  += '<option value="PANICULATA">PANICULATA</option>';
+            Species_options_str  += '<option value="PAPYRIFERA">PAPYRIFERA</option>';
+            Species_options_str  += '<option value="PARVIFOLIA">PARVIFOLIA</option>';
+            Species_options_str  += '<option value="PAVIA">PAVIA</option>';
+            Species_options_str  += '<option value="PENDULA">PENDULA</option>';
+            Species_options_str  += '<option value="PENNSYLVANICA">PENNSYLVANICA</option>';
+            Species_options_str  += '<option value="PENSYLVANICA">PENSYLVANICA</option>';
+            Species_options_str  += '<option value="PERSICA">PERSICA</option>';
+            Species_options_str  += '<option value="PHAENOPYRUM">PHAENOPYRUM</option>';
+            Species_options_str  += '<option value="PISIFERA">PISIFERA</option>';
+            Species_options_str  += '<option value="PLATANOIDES">PLATANOIDES</option>';
+            Species_options_str  += '<option value="PLATYPHYLLA">PLATYPHYLLA</option>';
+            Species_options_str  += '<option value="PLICATA">PLICATA</option>';
+            Species_options_str  += '<option value="POMIFERA">POMIFERA</option>';
+            Species_options_str  += '<option value="PONDEROSA">PONDEROSA</option>';
+            Species_options_str  += '<option value="POPULIFOLIA">POPULIFOLIA</option>';
+            Species_options_str  += '<option value="PRINUS">PRINUS</option>';
+            Species_options_str  += '<option value="PROCERA">PROCERA</option>';
+            Species_options_str  += '<option value="PROPINQUA">PROPINQUA</option>';
+            Species_options_str  += '<option value="PSEUDOACACIA">PSEUDOACACIA</option>';
+            Species_options_str  += '<option value="PSEUDOPLATANUS">PSEUDOPLATANUS</option>';
+            Species_options_str  += '<option value="PUMILA">PUMILA</option>';
+            Species_options_str  += '<option value="PUNGENS">PUNGENS</option>';
+            Species_options_str  += '<option value="PYRIFOLIA">PYRIFOLIA</option>';
+            Species_options_str  += '<option value="QUADRANGULATA">QUADRANGULATA</option>';
+            Species_options_str  += '<option value="REGIA">REGIA</option>';
+            Species_options_str  += '<option value="RETICULATA">RETICULATA</option>';
+            Species_options_str  += '<option value="ROBUR">ROBUR</option>';
+            Species_options_str  += '<option value="RUBRA">RUBRA</option>';
+            Species_options_str  += '<option value="RUBRUM">RUBRUM</option>';
+            Species_options_str  += '<option value="RUBRUM X SACCHARINUM">RUBRUM X SACCHARINUM</option>';
+            Species_options_str  += '<option value="SACCHARINUM">SACCHARINUM</option>';
+            Species_options_str  += '<option value="SACCHARUM">SACCHARUM</option>';
+            Species_options_str  += '<option value="SARGENTII">SARGENTII</option>';
+            Species_options_str  += '<option value="SCOPULORUM">SCOPULORUM</option>';
+            Species_options_str  += '<option value="SEMPERVIRENS">SEMPERVIRENS</option>';
+            Species_options_str  += '<option value="SEROTINA">SEROTINA</option>';
+            Species_options_str  += '<option value="SERRATA">SERRATA</option>';
+            Species_options_str  += '<option value="SERRULATA">SERRULATA</option>';
+            Species_options_str  += '<option value="SHUMARDII">SHUMARDII</option>';
+            Species_options_str  += '<option value="SPECIES">SPECIES</option>';
+            Species_options_str  += '<option value="SPECIOSA">SPECIOSA</option>';
+            Species_options_str  += '<option value="STELLATA">STELLATA</option>';
+            Species_options_str  += '<option value="STROBUS">STROBUS</option>';
+            Species_options_str  += '<option value="STYRACIFLUA">STYRACIFLUA</option>';
+            Species_options_str  += '<option value="SUBHIRTELLA">SUBHIRTELLA</option>';
+            Species_options_str  += '<option value="SUKSDORFII">SUKSDORFII</option>';
+            Species_options_str  += '<option value="SYLVATICA">SYLVATICA</option>';
+            Species_options_str  += '<option value="SYLVESTRIS">SYLVESTRIS</option>';
+            Species_options_str  += '<option value="TATARICUM">TATARICUM</option>';
+            Species_options_str  += '<option value="THOMASII">THOMASII</option>';
+            Species_options_str  += '<option value="THUNBERGII">THUNBERGII</option>';
+            Species_options_str  += '<option value="TOMENTOSA">TOMENTOSA</option>';
+            Species_options_str  += '<option value="TREMULOIDES">TREMULOIDES</option>';
+            Species_options_str  += '<option value="TRIACANTHOS">TRIACANTHOS</option>';
+            Species_options_str  += '<option value="TRICHOCARPA">TRICHOCARPA</option>';
+            Species_options_str  += '<option value="TRILOBA">TRILOBA</option>';
+            Species_options_str  += '<option value="TRUNCATUM">TRUNCATUM</option>';
+            Species_options_str  += '<option value="TRUNCATUM X PLATANOIDES">TRUNCATUM X PLATANOIDES</option>';
+            Species_options_str  += '<option value="TSCHONOSKII">TSCHONOSKII</option>';
+            Species_options_str  += '<option value="TULIPIFERA">TULIPIFERA</option>';
+            Species_options_str  += '<option value="TYPHINA">TYPHINA</option>';
+            Species_options_str  += '<option value="ULMOIDES">ULMOIDES</option>';
+            Species_options_str  += '<option value="VELUTINA">VELUTINA</option>';
+            Species_options_str  += '<option value="VIRGINIANA">VIRGINIANA</option>';
+            Species_options_str  += '<option value="VIRIDIS">VIRIDIS</option>';
+            Species_options_str  += '<option value="WALLICHIANA">WALLICHIANA</option>';
+            Species_options_str  += '<option value="WILSONIANA">WILSONIANA</option>';
+            Species_options_str  += '<option value="WILSONIANA X JAPONICA X PUMILA HYBRID">WILSONIANA X JAPONICA X PUMILA HYBRID</option>';
+            Species_options_str  += '<option value="X ACERIFOLIA">X ACERIFOLIA</option>';
+            Species_options_str  += '<option value="X BIMUNDORUM">X BIMUNDORUM</option>';
+            Species_options_str  += '<option value="X BLIREIANA">X BLIREIANA</option>';
+            Species_options_str  += '<option value="X CANADENSIS">X CANADENSIS</option>';
+            Species_options_str  += '<option value="X CARNEA">X CARNEA</option>';
+            Species_options_str  += '<option value="X EUCHLORA">X EUCHLORA</option>';
+            Species_options_str  += '<option value="X GRANDIFLORA">X GRANDIFLORA</option>';
+            Species_options_str  += '<option value="X LAVALLEI">X LAVALLEI</option>';
+            Species_options_str  += '<option value="X SOULANGIANA">X SOULANGIANA</option>';
+            Species_options_str  += '<option value="X WATERERI">X WATERERI</option>';
+            sel_Species.innerHTML = Species_options_str;
+            div_Species.appendChild(sel_Species);
+            var lab_Species = document.createElement('div');
+            lab_Species.innerHTML = 'Species';
+            lab_Species.className = 'filterlabel';
+            div_Species.appendChild(lab_Species);
+            var reset_Species = document.createElement('div');
+            reset_Species.innerHTML = 'clear filter';
+            reset_Species.className = 'filterlabel';
+            reset_Species.onclick = function() {
+                var options = document.getElementById("sel_Species").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Species.appendChild(reset_Species);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Common_Name = document.createElement('div');
+            div_Common_Name.id = "div_Common_Name";
+            div_Common_Name.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Common_Name);
+            sel_Common_Name = document.createElement('select');
+            sel_Common_Name.multiple = true;
+            sel_Common_Name.size = 10;
+            sel_Common_Name.id = "sel_Common_Name";
+            var Common_Name_options_str = "<option value='' unselected></option>";
+            sel_Common_Name.onchange = function(){filterFunc()};
+            Common_Name_options_str  += '<option value="NULL">NULL</option>';
+            Common_Name_options_str  += '<option value="Alder, European or Black">Alder, European or Black</option>';
+            Common_Name_options_str  += '<option value="Alder, Italian">Alder, Italian</option>';
+            Common_Name_options_str  += '<option value="Alder, Thinleaf">Alder, Thinleaf</option>';
+            Common_Name_options_str  += '<option value="Amur Corktree">Amur Corktree</option>';
+            Common_Name_options_str  += '<option value="Amur Maackia">Amur Maackia</option>';
+            Common_Name_options_str  += '<option value="Apple">Apple</option>';
+            Common_Name_options_str  += '<option value="Apple, Paradise">Apple, Paradise</option>';
+            Common_Name_options_str  += '<option value="Apple-Ashmeads Kernel">Apple-Ashmeads Kernel</option>';
+            Common_Name_options_str  += '<option value="Apple-Fuji">Apple-Fuji</option>';
+            Common_Name_options_str  += '<option value="Apple-Mutsu or Crispin">Apple-Mutsu or Crispin</option>';
+            Common_Name_options_str  += '<option value="Apple-Red Delicious Bisbee Spur">Apple-Red Delicious Bisbee Spur</option>';
+            Common_Name_options_str  += '<option value="Apricot">Apricot</option>';
+            Common_Name_options_str  += '<option value="Arborvitae, American or Eastern">Arborvitae, American or Eastern</option>';
+            Common_Name_options_str  += '<option value="Arborvitae, American or Eastern-Aurea">Arborvitae, American or Eastern-Aurea</option>';
+            Common_Name_options_str  += '<option value="Arborvitae, American or Eastern-Nigra">Arborvitae, American or Eastern-Nigra</option>';
+            Common_Name_options_str  += '<option value="Arborvitae, American or Eastern-Pyramidalis">Arborvitae, American or Eastern-Pyramidalis</option>';
+            Common_Name_options_str  += '<option value="Arborvitae, Oriental">Arborvitae, Oriental</option>';
+            Common_Name_options_str  += '<option value="Ash">Ash</option>';
+            Common_Name_options_str  += '<option value="Ash, Black">Ash, Black</option>';
+            Common_Name_options_str  += '<option value="Ash, Blue">Ash, Blue</option>';
+            Common_Name_options_str  += '<option value="Ash, Champ Tree Green-National 1999">Ash, Champ Tree Green-National 1999</option>';
+            Common_Name_options_str  += '<option value="Ash, Cimmaron-Cimmzam">Ash, Cimmaron-Cimmzam</option>';
+            Common_Name_options_str  += '<option value="Ash, European">Ash, European</option>';
+            Common_Name_options_str  += '<option value="Ash, European-Kimberly Blue">Ash, European-Kimberly Blue</option>';
+            Common_Name_options_str  += '<option value="Ash, Green">Ash, Green</option>';
+            Common_Name_options_str  += '<option value="Ash, Green-Bergeson">Ash, Green-Bergeson</option>';
+            Common_Name_options_str  += '<option value="Ash, Green-Marshalls Seedless">Ash, Green-Marshalls Seedless</option>';
+            Common_Name_options_str  += '<option value="Ash, Green-Patmore">Ash, Green-Patmore</option>';
+            Common_Name_options_str  += '<option value="Ash, Green-Summit">Ash, Green-Summit</option>';
+            Common_Name_options_str  += '<option value="Ash, Green-Urbanite">Ash, Green-Urbanite</option>';
+            Common_Name_options_str  += '<option value="Ash, Leprechaun-Johnson">Ash, Leprechaun-Johnson</option>';
+            Common_Name_options_str  += '<option value="Ash, Manchurian-Mancana ">Ash, Manchurian-Mancana </option>';
+            Common_Name_options_str  += '<option value="Ash, Raywood">Ash, Raywood</option>';
+            Common_Name_options_str  += '<option value="Ash, White">Ash, White</option>';
+            Common_Name_options_str  += '<option value="Ash, White-Autumn Applause">Ash, White-Autumn Applause</option>';
+            Common_Name_options_str  += '<option value="Ash, White-Autumn Purple">Ash, White-Autumn Purple</option>';
+            Common_Name_options_str  += '<option value="Ash, White-Rosehill">Ash, White-Rosehill</option>';
+            Common_Name_options_str  += '<option value="Ash, White-Royal Purple">Ash, White-Royal Purple</option>';
+            Common_Name_options_str  += '<option value="Ash, White-Skyline">Ash, White-Skyline</option>';
+            Common_Name_options_str  += '<option value="Aspen">Aspen</option>';
+            Common_Name_options_str  += '<option value="Aspen, Bigtooth">Aspen, Bigtooth</option>';
+            Common_Name_options_str  += '<option value="Aspen, Quaking">Aspen, Quaking</option>';
+            Common_Name_options_str  += '<option value="Bald Cypress">Bald Cypress</option>';
+            Common_Name_options_str  += '<option value="Bald Cypress, Shawnee Brave-Mickelson">Bald Cypress, Shawnee Brave-Mickelson</option>';
+            Common_Name_options_str  += '<option value="Beech">Beech</option>';
+            Common_Name_options_str  += '<option value="Beech, American">Beech, American</option>';
+            Common_Name_options_str  += '<option value="Beech, European">Beech, European</option>';
+            Common_Name_options_str  += '<option value="Birch">Birch</option>';
+            Common_Name_options_str  += '<option value="Birch Clump, Heritage River-Cully">Birch Clump, Heritage River-Cully</option>';
+            Common_Name_options_str  += '<option value="Birch, Dakota Pinnacle-Fargo">Birch, Dakota Pinnacle-Fargo</option>';
+            Common_Name_options_str  += '<option value="Birch, European White">Birch, European White</option>';
+            Common_Name_options_str  += '<option value="Birch, Gray-Whitespire">Birch, Gray-Whitespire</option>';
+            Common_Name_options_str  += '<option value="Birch, Heritage River-Cully">Birch, Heritage River-Cully</option>';
+            Common_Name_options_str  += '<option value="Birch, Monarch">Birch, Monarch</option>';
+            Common_Name_options_str  += '<option value="Birch, Paper">Birch, Paper</option>';
+            Common_Name_options_str  += '<option value="Birch, Renaissance Reflection Paper-Renci">Birch, Renaissance Reflection Paper-Renci</option>';
+            Common_Name_options_str  += '<option value="Birch, River">Birch, River</option>';
+            Common_Name_options_str  += '<option value="Birch, Water">Birch, Water</option>';
+            Common_Name_options_str  += '<option value="Birch, Weeping-Gracilis">Birch, Weeping-Gracilis</option>';
+            Common_Name_options_str  += '<option value="Birdcherry">Birdcherry</option>';
+            Common_Name_options_str  += '<option value="Blackgum or Tupelo">Blackgum or Tupelo</option>';
+            Common_Name_options_str  += '<option value="Boxelder">Boxelder</option>';
+            Common_Name_options_str  += '<option value="Buckeye">Buckeye</option>';
+            Common_Name_options_str  += '<option value="Buckeye, Ohio">Buckeye, Ohio</option>';
+            Common_Name_options_str  += '<option value="Buckeye, Red">Buckeye, Red</option>';
+            Common_Name_options_str  += '<option value="Catalpa">Catalpa</option>';
+            Common_Name_options_str  += '<option value="Catalpa, Chinese">Catalpa, Chinese</option>';
+            Common_Name_options_str  += '<option value="Catalpa, Northern">Catalpa, Northern</option>';
+            Common_Name_options_str  += '<option value="Catalpa, Southern">Catalpa, Southern</option>';
+            Common_Name_options_str  += '<option value="Catalpa, Southern-Nana">Catalpa, Southern-Nana</option>';
+            Common_Name_options_str  += '<option value="Cedar">Cedar</option>';
+            Common_Name_options_str  += '<option value="Cedar, Atlas">Cedar, Atlas</option>';
+            Common_Name_options_str  += '<option value="Cedar, Blue Atlas-Glauca Group">Cedar, Blue Atlas-Glauca Group</option>';
+            Common_Name_options_str  += '<option value="Cedar, Deodar">Cedar, Deodar</option>';
+            Common_Name_options_str  += '<option value="Cedar, Incense">Cedar, Incense</option>';
+            Common_Name_options_str  += '<option value="Cedar, Lebanon">Cedar, Lebanon</option>';
+            Common_Name_options_str  += '<option value="Cedar, Northern White">Cedar, Northern White</option>';
+            Common_Name_options_str  += '<option value="Cherry">Cherry</option>';
+            Common_Name_options_str  += '<option value="Cherry, Higan">Cherry, Higan</option>';
+            Common_Name_options_str  += '<option value="Cherry, Japanese Flowering">Cherry, Japanese Flowering</option>';
+            Common_Name_options_str  += '<option value="Cherry, Japanese Flowering-Amanogawa">Cherry, Japanese Flowering-Amanogawa</option>';
+            Common_Name_options_str  += '<option value="Cherry, Japanese Flowering-Kwanzan">Cherry, Japanese Flowering-Kwanzan</option>';
+            Common_Name_options_str  += '<option value="Cherry, Sargent">Cherry, Sargent</option>';
+            Common_Name_options_str  += '<option value="Cherry, Weeping Higan-Pendula">Cherry, Weeping Higan-Pendula</option>';
+            Common_Name_options_str  += '<option value="Chestnut, American">Chestnut, American</option>';
+            Common_Name_options_str  += '<option value="Chokecherry, Amur">Chokecherry, Amur</option>';
+            Common_Name_options_str  += '<option value="Chokecherry, Common">Chokecherry, Common</option>';
+            Common_Name_options_str  += '<option value="Chokecherry, Common-Canada Red">Chokecherry, Common-Canada Red</option>';
+            Common_Name_options_str  += '<option value="Chokecherry, Common-Schubert">Chokecherry, Common-Schubert</option>';
+            Common_Name_options_str  += '<option value="Corkwood">Corkwood</option>';
+            Common_Name_options_str  += '<option value="Cottonwood">Cottonwood</option>';
+            Common_Name_options_str  += '<option value="Cottonwood, Black">Cottonwood, Black</option>';
+            Common_Name_options_str  += '<option value="Cottonwood, Eastern">Cottonwood, Eastern</option>';
+            Common_Name_options_str  += '<option value="Cottonwood, Eastern-Siouxland">Cottonwood, Eastern-Siouxland</option>';
+            Common_Name_options_str  += '<option value="Cottonwood, Narrowleaf">Cottonwood, Narrowleaf</option>';
+            Common_Name_options_str  += '<option value="Crabapple">Crabapple</option>';
+            Common_Name_options_str  += '<option value="Crabapple, Bechtel-Plena">Crabapple, Bechtel-Plena</option>';
+            Common_Name_options_str  += '<option value="Crabapple, Brandywine-Branzam">Crabapple, Brandywine-Branzam</option>';
+            Common_Name_options_str  += '<option value="Crabapple, Centurion-Centzam">Crabapple, Centurion-Centzam</option>';
+            Common_Name_options_str  += '<option value="Crabapple, Purple Prince">Crabapple, Purple Prince</option>';
+            Common_Name_options_str  += '<option value="Crabapple, Red Jewel-Jewelcole">Crabapple, Red Jewel-Jewelcole</option>';
+            Common_Name_options_str  += '<option value="Crabapple, Tschonoskii">Crabapple, Tschonoskii</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Adams">Crabapple-Adams</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Almey">Crabapple-Almey</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Donald Wyman">Crabapple-Donald Wyman</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Indian Summer">Crabapple-Indian Summer</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Klehms Improved Bechtel">Crabapple-Klehms Improved Bechtel</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Liset">Crabapple-Liset</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Pink Perfection">Crabapple-Pink Perfection</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Profusion">Crabapple-Profusion</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Radiant">Crabapple-Radiant</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Red Barron">Crabapple-Red Barron</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Robinson">Crabapple-Robinson</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Royal Raindrops">Crabapple-Royal Raindrops</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Snowdrift">Crabapple-Snowdrift</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Spring Snow">Crabapple-Spring Snow</option>';
+            Common_Name_options_str  += '<option value="Crabapple-Winter Gold">Crabapple-Winter Gold</option>';
+            Common_Name_options_str  += '<option value="Cucumber Tree">Cucumber Tree</option>';
+            Common_Name_options_str  += '<option value="Dogwood">Dogwood</option>';
+            Common_Name_options_str  += '<option value="Dogwood, Flowering">Dogwood, Flowering</option>';
+            Common_Name_options_str  += '<option value="Douglasfir">Douglasfir</option>';
+            Common_Name_options_str  += '<option value="Elm">Elm</option>';
+            Common_Name_options_str  += '<option value="Elm, Accolade-Morton">Elm, Accolade-Morton</option>';
+            Common_Name_options_str  += '<option value="Elm, American">Elm, American</option>';
+            Common_Name_options_str  += '<option value="Elm, American-New Harmony">Elm, American-New Harmony</option>';
+            Common_Name_options_str  += '<option value="Elm, American-Princeton">Elm, American-Princeton</option>';
+            Common_Name_options_str  += '<option value="Elm, American-Valley Forge">Elm, American-Valley Forge</option>';
+            Common_Name_options_str  += '<option value="Elm, Chinese or Lacebark">Elm, Chinese or Lacebark</option>';
+            Common_Name_options_str  += '<option value="Elm, Chinese or Lacebark-Dynasty">Elm, Chinese or Lacebark-Dynasty</option>';
+            Common_Name_options_str  += '<option value="Elm, Emerald Sunshine-JFS Bieberich">Elm, Emerald Sunshine-JFS Bieberich</option>';
+            Common_Name_options_str  += '<option value="Elm, English">Elm, English</option>';
+            Common_Name_options_str  += '<option value="Elm, Rock">Elm, Rock</option>';
+            Common_Name_options_str  += '<option value="Elm, Scotch">Elm, Scotch</option>';
+            Common_Name_options_str  += '<option value="Elm, Siberian">Elm, Siberian</option>';
+            Common_Name_options_str  += '<option value="Elm, Slippery">Elm, Slippery</option>';
+            Common_Name_options_str  += '<option value="Elm, Triumph-Morton Glossy">Elm, Triumph-Morton Glossy</option>';
+            Common_Name_options_str  += '<option value="Elm-Discovery">Elm-Discovery</option>';
+            Common_Name_options_str  += '<option value="Elm-Frontier">Elm-Frontier</option>';
+            Common_Name_options_str  += '<option value="Elm-Prospector">Elm-Prospector</option>';
+            Common_Name_options_str  += '<option value="Falsecypress, Japanese">Falsecypress, Japanese</option>';
+            Common_Name_options_str  += '<option value="Falsecypress, Lawson">Falsecypress, Lawson</option>';
+            Common_Name_options_str  += '<option value="Falsecypress, Nootka">Falsecypress, Nootka</option>';
+            Common_Name_options_str  += '<option value="Fir">Fir</option>';
+            Common_Name_options_str  += '<option value="Fir, European Silver">Fir, European Silver</option>';
+            Common_Name_options_str  += '<option value="Fir, King Boris">Fir, King Boris</option>';
+            Common_Name_options_str  += '<option value="Fir, Nordmann">Fir, Nordmann</option>';
+            Common_Name_options_str  += '<option value="Fir, White">Fir, White</option>';
+            Common_Name_options_str  += '<option value="Fragrant Epaulette">Fragrant Epaulette</option>';
+            Common_Name_options_str  += '<option value="Ginkgo">Ginkgo</option>';
+            Common_Name_options_str  += '<option value="Ginkgo, Emperor-Woodstock">Ginkgo, Emperor-Woodstock</option>';
+            Common_Name_options_str  += '<option value="Ginkgo, Presidential Gold-The President">Ginkgo, Presidential Gold-The President</option>';
+            Common_Name_options_str  += '<option value="Ginkgo-Autumn Gold">Ginkgo-Autumn Gold</option>';
+            Common_Name_options_str  += '<option value="Ginkgo-Magyar">Ginkgo-Magyar</option>';
+            Common_Name_options_str  += '<option value="Ginkgo-Princeton Sentry">Ginkgo-Princeton Sentry</option>';
+            Common_Name_options_str  += '<option value="Ginkgo-Saratoga">Ginkgo-Saratoga</option>';
+            Common_Name_options_str  += '<option value="Golden Chain Tree-Vossii">Golden Chain Tree-Vossii</option>';
+            Common_Name_options_str  += '<option value="Golden Rain Tree">Golden Rain Tree</option>';
+            Common_Name_options_str  += '<option value="Hackberry">Hackberry</option>';
+            Common_Name_options_str  += '<option value="Hackberry, Common-Prairie Pride">Hackberry, Common-Prairie Pride</option>';
+            Common_Name_options_str  += '<option value="Hardy Rubber Tree">Hardy Rubber Tree</option>';
+            Common_Name_options_str  += '<option value="Hawthorn">Hawthorn</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Cockspur">Hawthorn, Cockspur</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Common">Hawthorn, Common</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Crusader-Cruzam">Hawthorn, Crusader-Cruzam</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, English">Hawthorn, English</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, English-Crimson Cloud">Hawthorn, English-Crimson Cloud</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, English-Pauls Scarlet">Hawthorn, English-Pauls Scarlet</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Glossy">Hawthorn, Glossy</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Green-Winter King">Hawthorn, Green-Winter King</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Lavalle">Hawthorn, Lavalle</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Parsley">Hawthorn, Parsley</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Suksdorf&apos;s">Hawthorn, Suksdorf&apos;s</option>';
+            Common_Name_options_str  += '<option value="Hawthorn, Washington">Hawthorn, Washington</option>';
+            Common_Name_options_str  += '<option value="Hazel">Hazel</option>';
+            Common_Name_options_str  += '<option value="Hibiscus">Hibiscus</option>';
+            Common_Name_options_str  += '<option value="Hickory">Hickory</option>';
+            Common_Name_options_str  += '<option value="Hickory, Shagbark">Hickory, Shagbark</option>';
+            Common_Name_options_str  += '<option value="Honeylocust">Honeylocust</option>';
+            Common_Name_options_str  += '<option value="Honeylocust, Halka-Christie">Honeylocust, Halka-Christie</option>';
+            Common_Name_options_str  += '<option value="Honeylocust, Imperial-Impcole">Honeylocust, Imperial-Impcole</option>';
+            Common_Name_options_str  += '<option value="Honeylocust, Shademaster">Honeylocust, Shademaster</option>';
+            Common_Name_options_str  += '<option value="Honeylocust, Skyline-Skycole">Honeylocust, Skyline-Skycole</option>';
+            Common_Name_options_str  += '<option value="Honeylocust, Sunburst-Suncole">Honeylocust, Sunburst-Suncole</option>';
+            Common_Name_options_str  += '<option value="Honeylocust-Green Arbor">Honeylocust-Green Arbor</option>';
+            Common_Name_options_str  += '<option value="Honeylocust-Moraine">Honeylocust-Moraine</option>';
+            Common_Name_options_str  += '<option value="Honeylocust-Perfection">Honeylocust-Perfection</option>';
+            Common_Name_options_str  += '<option value="Honeylocust-Rubylace">Honeylocust-Rubylace</option>';
+            Common_Name_options_str  += '<option value="Hophornbeam">Hophornbeam</option>';
+            Common_Name_options_str  += '<option value="Hophornbeam, American or Eastern">Hophornbeam, American or Eastern</option>';
+            Common_Name_options_str  += '<option value="Hornbeam, American">Hornbeam, American</option>';
+            Common_Name_options_str  += '<option value="Hornbeam, European">Hornbeam, European</option>';
+            Common_Name_options_str  += '<option value="Hornbeam, European-Frans Fontaine">Hornbeam, European-Frans Fontaine</option>';
+            Common_Name_options_str  += '<option value="Horsechestnut">Horsechestnut</option>';
+            Common_Name_options_str  += '<option value="Horsechestnut-Baumannii">Horsechestnut-Baumannii</option>';
+            Common_Name_options_str  += '<option value="Horsechestnut-Red">Horsechestnut-Red</option>';
+            Common_Name_options_str  += '<option value="Horsechestnut-Red-Fort McNair">Horsechestnut-Red-Fort McNair</option>';
+            Common_Name_options_str  += '<option value="Horsechestnut-Ruby Red Briotti">Horsechestnut-Ruby Red Briotti</option>';
+            Common_Name_options_str  += '<option value="Japanese Pagodatree">Japanese Pagodatree</option>';
+            Common_Name_options_str  += '<option value="Japanese Pagodatree-Regent">Japanese Pagodatree-Regent</option>';
+            Common_Name_options_str  += '<option value="Japanese Tree Lilac">Japanese Tree Lilac</option>';
+            Common_Name_options_str  += '<option value="Japanese Tree Lilac-Ivory Silk">Japanese Tree Lilac-Ivory Silk</option>';
+            Common_Name_options_str  += '<option value="Juniper">Juniper</option>';
+            Common_Name_options_str  += '<option value="Juniper, Chinese">Juniper, Chinese</option>';
+            Common_Name_options_str  += '<option value="Juniper, Keteleer Chinese-Keteleeri">Juniper, Keteleer Chinese-Keteleeri</option>';
+            Common_Name_options_str  += '<option value="Juniper, Rocky Mountain">Juniper, Rocky Mountain</option>';
+            Common_Name_options_str  += '<option value="Juniper, Wichita Blue">Juniper, Wichita Blue</option>';
+            Common_Name_options_str  += '<option value="Katsura Tree">Katsura Tree</option>';
+            Common_Name_options_str  += '<option value="Kentucky Coffeetree">Kentucky Coffeetree</option>';
+            Common_Name_options_str  += '<option value="Kentucky Coffeetree-Espresso">Kentucky Coffeetree-Espresso</option>';
+            Common_Name_options_str  += '<option value="Larch, European or Common">Larch, European or Common</option>';
+            Common_Name_options_str  += '<option value="Linden">Linden</option>';
+            Common_Name_options_str  += '<option value="Linden, American">Linden, American</option>';
+            Common_Name_options_str  += '<option value="Linden, American Sentry-Mcksentry">Linden, American Sentry-Mcksentry</option>';
+            Common_Name_options_str  += '<option value="Linden, American-Redmond">Linden, American-Redmond</option>';
+            Common_Name_options_str  += '<option value="Linden, Corinthian Littleleaf-Corzam">Linden, Corinthian Littleleaf-Corzam</option>';
+            Common_Name_options_str  += '<option value="Linden, Crimean">Linden, Crimean</option>';
+            Common_Name_options_str  += '<option value="Linden, Green Mountain Silver-PNI 6051">Linden, Green Mountain Silver-PNI 6051</option>';
+            Common_Name_options_str  += '<option value="Linden, Legend American-Wandell">Linden, Legend American-Wandell</option>';
+            Common_Name_options_str  += '<option value="Linden, Littleleaf">Linden, Littleleaf</option>';
+            Common_Name_options_str  += '<option value="Linden, Littleleaf-Glenleven">Linden, Littleleaf-Glenleven</option>';
+            Common_Name_options_str  += '<option value="Linden, Littleleaf-Greenspire">Linden, Littleleaf-Greenspire</option>';
+            Common_Name_options_str  += '<option value="Linden, Littleleaf-Olympic">Linden, Littleleaf-Olympic</option>';
+            Common_Name_options_str  += '<option value="Linden, Littleleaf-Shamrock">Linden, Littleleaf-Shamrock</option>';
+            Common_Name_options_str  += '<option value="Linden, Mongolian">Linden, Mongolian</option>';
+            Common_Name_options_str  += '<option value="Linden, Prestige Littleleaf-Norbert">Linden, Prestige Littleleaf-Norbert</option>';
+            Common_Name_options_str  += '<option value="Linden, Satin Shadow Silver-Sashazam">Linden, Satin Shadow Silver-Sashazam</option>';
+            Common_Name_options_str  += '<option value="Linden, Silver">Linden, Silver</option>';
+            Common_Name_options_str  += '<option value="Linden, Silver-Princeton">Linden, Silver-Princeton</option>';
+            Common_Name_options_str  += '<option value="Linden, Silver-Sterling">Linden, Silver-Sterling</option>';
+            Common_Name_options_str  += '<option value="Locust, Black">Locust, Black</option>';
+            Common_Name_options_str  += '<option value="Magnolia">Magnolia</option>';
+            Common_Name_options_str  += '<option value="Magnolia, Saucer">Magnolia, Saucer</option>';
+            Common_Name_options_str  += '<option value="Magnolia, Southern">Magnolia, Southern</option>';
+            Common_Name_options_str  += '<option value="Magnolia, Star">Magnolia, Star</option>';
+            Common_Name_options_str  += '<option value="Magnolia, Yulan">Magnolia, Yulan</option>';
+            Common_Name_options_str  += '<option value="Maple">Maple</option>';
+            Common_Name_options_str  += '<option value="Maple, Amur">Maple, Amur</option>';
+            Common_Name_options_str  += '<option value="Maple, Amur-Flame">Maple, Amur-Flame</option>';
+            Common_Name_options_str  += '<option value="Maple, Bigleaf">Maple, Bigleaf</option>';
+            Common_Name_options_str  += '<option value="Maple, Bigtooth">Maple, Bigtooth</option>';
+            Common_Name_options_str  += '<option value="Maple, Black">Maple, Black</option>';
+            Common_Name_options_str  += '<option value="Maple, Crescendo Sugar-Morton">Maple, Crescendo Sugar-Morton</option>';
+            Common_Name_options_str  += '<option value="Maple, Crimson Sunset">Maple, Crimson Sunset</option>';
+            Common_Name_options_str  += '<option value="Maple, Hedge">Maple, Hedge</option>';
+            Common_Name_options_str  += '<option value="Maple, Hot Wings Tatarian-Garann">Maple, Hot Wings Tatarian-Garann</option>';
+            Common_Name_options_str  += '<option value="Maple, Japanese">Maple, Japanese</option>';
+            Common_Name_options_str  += '<option value="Maple, John Pair Caddo-John Pair">Maple, John Pair Caddo-John Pair</option>';
+            Common_Name_options_str  += '<option value="Maple, Metro Gold Hedge-Panacek">Maple, Metro Gold Hedge-Panacek</option>';
+            Common_Name_options_str  += '<option value="Maple, Miyabei">Maple, Miyabei</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway">Maple, Norway</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Cleveland">Maple, Norway-Cleveland</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Columnare">Maple, Norway-Columnare</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Crimson King">Maple, Norway-Crimson King</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Crimson Sentry">Maple, Norway-Crimson Sentry</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Deborah">Maple, Norway-Deborah</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Emerald Lustre">Maple, Norway-Emerald Lustre</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Emerald Queen">Maple, Norway-Emerald Queen</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Fairview">Maple, Norway-Fairview</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Parkway">Maple, Norway-Parkway</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Princeton Gold">Maple, Norway-Princeton Gold</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Royal Red">Maple, Norway-Royal Red</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Schwedleri">Maple, Norway-Schwedleri</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Summershade">Maple, Norway-Summershade</option>';
+            Common_Name_options_str  += '<option value="Maple, Norway-Superform">Maple, Norway-Superform</option>';
+            Common_Name_options_str  += '<option value="Maple, Norwegian Sunset">Maple, Norwegian Sunset</option>';
+            Common_Name_options_str  += '<option value="Maple, Pacific Sunset">Maple, Pacific Sunset</option>';
+            Common_Name_options_str  += '<option value="Maple, Paperbark">Maple, Paperbark</option>';
+            Common_Name_options_str  += '<option value="Maple, Red">Maple, Red</option>';
+            Common_Name_options_str  += '<option value="Maple, Red-Armstrong">Maple, Red-Armstrong</option>';
+            Common_Name_options_str  += '<option value="Maple, Red-Autumn Blaze">Maple, Red-Autumn Blaze</option>';
+            Common_Name_options_str  += '<option value="Maple, Red-October Glory">Maple, Red-October Glory</option>';
+            Common_Name_options_str  += '<option value="Maple, Red-Red Sunset">Maple, Red-Red Sunset</option>';
+            Common_Name_options_str  += '<option value="Maple, Redpointe-Frank Jr">Maple, Redpointe-Frank Jr</option>';
+            Common_Name_options_str  += '<option value="Maple, Rocky Mountain  ">Maple, Rocky Mountain  </option>';
+            Common_Name_options_str  += '<option value="Maple, Rocky Mountain Glow Bigtooth-Schmidt">Maple, Rocky Mountain Glow Bigtooth-Schmidt</option>';
+            Common_Name_options_str  += '<option value="Maple, Shantung">Maple, Shantung</option>';
+            Common_Name_options_str  += '<option value="Maple, Silver">Maple, Silver</option>';
+            Common_Name_options_str  += '<option value="Maple, St Gregory Hedge-Stgrezam">Maple, St Gregory Hedge-Stgrezam</option>';
+            Common_Name_options_str  += '<option value="Maple, State Street Miyabei-Morton">Maple, State Street Miyabei-Morton</option>';
+            Common_Name_options_str  += '<option value="Maple, Sugar">Maple, Sugar</option>';
+            Common_Name_options_str  += '<option value="Maple, Sugar-Autumn Splendor">Maple, Sugar-Autumn Splendor</option>';
+            Common_Name_options_str  += '<option value="Maple, Sugar-Columnar">Maple, Sugar-Columnar</option>';
+            Common_Name_options_str  += '<option value="Maple, Sugar-Commemoration">Maple, Sugar-Commemoration</option>';
+            Common_Name_options_str  += '<option value="Maple, Sugar-Green Mountain">Maple, Sugar-Green Mountain</option>';
+            Common_Name_options_str  += '<option value="Maple, Sugar-Legacy">Maple, Sugar-Legacy</option>';
+            Common_Name_options_str  += '<option value="Maple, Sugar-Oregon Trail">Maple, Sugar-Oregon Trail</option>';
+            Common_Name_options_str  += '<option value="Maple, Sycamore">Maple, Sycamore</option>';
+            Common_Name_options_str  += '<option value="Maple, Trident">Maple, Trident</option>';
+            Common_Name_options_str  += '<option value="Mountain Ash">Mountain Ash</option>';
+            Common_Name_options_str  += '<option value="Mountain Ash, American">Mountain Ash, American</option>';
+            Common_Name_options_str  += '<option value="Mountain Ash, European">Mountain Ash, European</option>';
+            Common_Name_options_str  += '<option value="Mulberry">Mulberry</option>';
+            Common_Name_options_str  += '<option value="Mulberry, Red">Mulberry, Red</option>';
+            Common_Name_options_str  += '<option value="Mulberry, White">Mulberry, White</option>';
+            Common_Name_options_str  += '<option value="Nectarine-Arctic Jay White">Nectarine-Arctic Jay White</option>';
+            Common_Name_options_str  += '<option value="Nectarine-Honey Royale">Nectarine-Honey Royale</option>';
+            Common_Name_options_str  += '<option value="Oak">Oak</option>';
+            Common_Name_options_str  += '<option value="Oak, American Dream Swamp White-JFS KW12">Oak, American Dream Swamp White-JFS KW12</option>';
+            Common_Name_options_str  += '<option value="Oak, Black">Oak, Black</option>';
+            Common_Name_options_str  += '<option value="Oak, Bur">Oak, Bur</option>';
+            Common_Name_options_str  += '<option value="Oak, Bur Gambel">Oak, Bur Gambel</option>';
+            Common_Name_options_str  += '<option value="Oak, Bur Urban Pinnacle-JFS KW3">Oak, Bur Urban Pinnacle-JFS KW3</option>';
+            Common_Name_options_str  += '<option value="Oak, Chestnut">Oak, Chestnut</option>';
+            Common_Name_options_str  += '<option value="Oak, Chinkapin">Oak, Chinkapin</option>';
+            Common_Name_options_str  += '<option value="Oak, Columnar English-Fastigiata">Oak, Columnar English-Fastigiata</option>';
+            Common_Name_options_str  += '<option value="Oak, English">Oak, English</option>';
+            Common_Name_options_str  += '<option value="Oak, English-Westminster Globe">Oak, English-Westminster Globe</option>';
+            Common_Name_options_str  += '<option value="Oak, European Turkey">Oak, European Turkey</option>';
+            Common_Name_options_str  += '<option value="Oak, Gambel">Oak, Gambel</option>';
+            Common_Name_options_str  += '<option value="Oak, Heritage">Oak, Heritage</option>';
+            Common_Name_options_str  += '<option value="Oak, Hungarian">Oak, Hungarian</option>';
+            Common_Name_options_str  += '<option value="Oak, Konara">Oak, Konara</option>';
+            Common_Name_options_str  += '<option value="Oak, Laurel">Oak, Laurel</option>';
+            Common_Name_options_str  += '<option value="Oak, Northern Pin">Oak, Northern Pin</option>';
+            Common_Name_options_str  += '<option value="Oak, Northern Red">Oak, Northern Red</option>';
+            Common_Name_options_str  += '<option value="Oak, Nuttall">Oak, Nuttall</option>';
+            Common_Name_options_str  += '<option value="Oak, Overcup">Oak, Overcup</option>';
+            Common_Name_options_str  += '<option value="Oak, Pin">Oak, Pin</option>';
+            Common_Name_options_str  += '<option value="Oak, Prairie Stature-Midwest">Oak, Prairie Stature-Midwest</option>';
+            Common_Name_options_str  += '<option value="Oak, Sawtooth">Oak, Sawtooth</option>';
+            Common_Name_options_str  += '<option value="Oak, Scarlet">Oak, Scarlet</option>';
+            Common_Name_options_str  += '<option value="Oak, Shingle">Oak, Shingle</option>';
+            Common_Name_options_str  += '<option value="Oak, Shumard">Oak, Shumard</option>';
+            Common_Name_options_str  += '<option value="Oak, Southern Red">Oak, Southern Red</option>';
+            Common_Name_options_str  += '<option value="Oak, Swamp White">Oak, Swamp White</option>';
+            Common_Name_options_str  += '<option value="Oak, White">Oak, White</option>';
+            Common_Name_options_str  += '<option value="Olive, Russian">Olive, Russian</option>';
+            Common_Name_options_str  += '<option value="Osage Orange">Osage Orange</option>';
+            Common_Name_options_str  += '<option value="Peach">Peach</option>';
+            Common_Name_options_str  += '<option value="Peach-Flamin Fury PF 17">Peach-Flamin Fury PF 17</option>';
+            Common_Name_options_str  += '<option value="Peach-Gloria NJ351">Peach-Gloria NJ351</option>';
+            Common_Name_options_str  += '<option value="Peach-Redhaven">Peach-Redhaven</option>';
+            Common_Name_options_str  += '<option value="Peach-Sauzee Giant White Saucer">Peach-Sauzee Giant White Saucer</option>';
+            Common_Name_options_str  += '<option value="Pear">Pear</option>';
+            Common_Name_options_str  += '<option value="Pear, Asian-Shinseiki">Pear, Asian-Shinseiki</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery Chanticleer-Glens Form">Pear, Callery Chanticleer-Glens Form</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery or Flowering">Pear, Callery or Flowering</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery-Aristocrat">Pear, Callery-Aristocrat</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery-Bradford">Pear, Callery-Bradford</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery-Cambridge">Pear, Callery-Cambridge</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery-Capital">Pear, Callery-Capital</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery-Chanticleer">Pear, Callery-Chanticleer</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery-Cleveland Select">Pear, Callery-Cleveland Select</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery-Redspire">Pear, Callery-Redspire</option>';
+            Common_Name_options_str  += '<option value="Pear, Callery-Whitehouse">Pear, Callery-Whitehouse</option>';
+            Common_Name_options_str  += '<option value="Pear, Common">Pear, Common</option>';
+            Common_Name_options_str  += '<option value="Pear, Gladiator Callery-Gladzam ">Pear, Gladiator Callery-Gladzam </option>';
+            Common_Name_options_str  += '<option value="Persian Ironwood">Persian Ironwood</option>';
+            Common_Name_options_str  += '<option value="Persimmon, Common">Persimmon, Common</option>';
+            Common_Name_options_str  += '<option value="Pine">Pine</option>';
+            Common_Name_options_str  += '<option value="Pine, Austrian">Pine, Austrian</option>';
+            Common_Name_options_str  += '<option value="Pine, Bosnian">Pine, Bosnian</option>';
+            Common_Name_options_str  += '<option value="Pine, Bristlecone">Pine, Bristlecone</option>';
+            Common_Name_options_str  += '<option value="Pine, Columnar Scotch-Fastigiata">Pine, Columnar Scotch-Fastigiata</option>';
+            Common_Name_options_str  += '<option value="Pine, Coulter">Pine, Coulter</option>';
+            Common_Name_options_str  += '<option value="Pine, Eastern White">Pine, Eastern White</option>';
+            Common_Name_options_str  += '<option value="Pine, Himalayan White">Pine, Himalayan White</option>';
+            Common_Name_options_str  += '<option value="Pine, Japanese Black">Pine, Japanese Black</option>';
+            Common_Name_options_str  += '<option value="Pine, Limber">Pine, Limber</option>';
+            Common_Name_options_str  += '<option value="Pine, Limber-Vanderwolfs Pyramid">Pine, Limber-Vanderwolfs Pyramid</option>';
+            Common_Name_options_str  += '<option value="Pine, Lodgepole">Pine, Lodgepole</option>';
+            Common_Name_options_str  += '<option value="Pine, Mugo">Pine, Mugo</option>';
+            Common_Name_options_str  += '<option value="Pine, Pinyon">Pine, Pinyon</option>';
+            Common_Name_options_str  += '<option value="Pine, Pond">Pine, Pond</option>';
+            Common_Name_options_str  += '<option value="Pine, Ponderosa">Pine, Ponderosa</option>';
+            Common_Name_options_str  += '<option value="Pine, Scotch or Scots">Pine, Scotch or Scots</option>';
+            Common_Name_options_str  += '<option value="Pine, Spruce">Pine, Spruce</option>';
+            Common_Name_options_str  += '<option value="Pine, Western White">Pine, Western White</option>';
+            Common_Name_options_str  += '<option value="Planetree, EXCLAMATION London-Morton Circle">Planetree, EXCLAMATION London-Morton Circle</option>';
+            Common_Name_options_str  += '<option value="Planetree, London">Planetree, London</option>';
+            Common_Name_options_str  += '<option value="Planetree, London-Bloodgood">Planetree, London-Bloodgood</option>';
+            Common_Name_options_str  += '<option value="Plum">Plum</option>';
+            Common_Name_options_str  += '<option value="Plum, Blireiana">Plum, Blireiana</option>';
+            Common_Name_options_str  += '<option value="Plum, Cherry-Thundercloud">Plum, Cherry-Thundercloud</option>';
+            Common_Name_options_str  += '<option value="Plum, Flowering">Plum, Flowering</option>';
+            Common_Name_options_str  += '<option value="Plum, Newport Cherry-Newportii">Plum, Newport Cherry-Newportii</option>';
+            Common_Name_options_str  += '<option value="Poplar">Poplar</option>';
+            Common_Name_options_str  += '<option value="Poplar, Carolina">Poplar, Carolina</option>';
+            Common_Name_options_str  += '<option value="Poplar, Lombardy">Poplar, Lombardy</option>';
+            Common_Name_options_str  += '<option value="Poplar, Robusta">Poplar, Robusta</option>';
+            Common_Name_options_str  += '<option value="Poplar, White">Poplar, White</option>';
+            Common_Name_options_str  += '<option value="Redbud, Eastern">Redbud, Eastern</option>';
+            Common_Name_options_str  += '<option value="Redbud, Eastern-Forest Pansy">Redbud, Eastern-Forest Pansy</option>';
+            Common_Name_options_str  += '<option value="Redcedar, Eastern">Redcedar, Eastern</option>';
+            Common_Name_options_str  += '<option value="Redcedar, Western">Redcedar, Western</option>';
+            Common_Name_options_str  += '<option value="Redwood, Coast">Redwood, Coast</option>';
+            Common_Name_options_str  += '<option value="Redwood, Dawn">Redwood, Dawn</option>';
+            Common_Name_options_str  += '<option value="Sassafras">Sassafras</option>';
+            Common_Name_options_str  += '<option value="Sequoia, Giant or Giant Redwood">Sequoia, Giant or Giant Redwood</option>';
+            Common_Name_options_str  += '<option value="Serviceberry">Serviceberry</option>';
+            Common_Name_options_str  += '<option value="Serviceberry, Autumn Brilliance">Serviceberry, Autumn Brilliance</option>';
+            Common_Name_options_str  += '<option value="Serviceberry, Canadian">Serviceberry, Canadian</option>';
+            Common_Name_options_str  += '<option value="Serviceberry, Downy">Serviceberry, Downy</option>';
+            Common_Name_options_str  += '<option value="Serviceberry, Western or Saskatoon">Serviceberry, Western or Saskatoon</option>';
+            Common_Name_options_str  += '<option value="Smoketree, American">Smoketree, American</option>';
+            Common_Name_options_str  += '<option value="Smoketree, European">Smoketree, European</option>';
+            Common_Name_options_str  += '<option value="Spruce">Spruce</option>';
+            Common_Name_options_str  += '<option value="Spruce, Black Hills-Densata">Spruce, Black Hills-Densata</option>';
+            Common_Name_options_str  += '<option value="Spruce, Colorado Blue-Glauca">Spruce, Colorado Blue-Glauca</option>';
+            Common_Name_options_str  += '<option value="Spruce, Colorado or Blue">Spruce, Colorado or Blue</option>';
+            Common_Name_options_str  += '<option value="Spruce, Columnar Colorado Blue-Fastigiata">Spruce, Columnar Colorado Blue-Fastigiata</option>';
+            Common_Name_options_str  += '<option value="Spruce, Engelmann">Spruce, Engelmann</option>';
+            Common_Name_options_str  += '<option value="Spruce, Hoops Blue-Hoopsii">Spruce, Hoops Blue-Hoopsii</option>';
+            Common_Name_options_str  += '<option value="Spruce, Kosters Blue-Kosteri">Spruce, Kosters Blue-Kosteri</option>';
+            Common_Name_options_str  += '<option value="Spruce, Norway">Spruce, Norway</option>';
+            Common_Name_options_str  += '<option value="Spruce, Oriental">Spruce, Oriental</option>';
+            Common_Name_options_str  += '<option value="Spruce, Serbian">Spruce, Serbian</option>';
+            Common_Name_options_str  += '<option value="Spruce, White">Spruce, White</option>';
+            Common_Name_options_str  += '<option value="Sugarberry">Sugarberry</option>';
+            Common_Name_options_str  += '<option value="Sumac">Sumac</option>';
+            Common_Name_options_str  += '<option value="Sumac, Staghorn">Sumac, Staghorn</option>';
+            Common_Name_options_str  += '<option value="Sweetgum">Sweetgum</option>';
+            Common_Name_options_str  += '<option value="Sweetgum, Cherokee-Ward">Sweetgum, Cherokee-Ward</option>';
+            Common_Name_options_str  += '<option value="Sweetgum, Happidaze-Hapdell">Sweetgum, Happidaze-Hapdell</option>';
+            Common_Name_options_str  += '<option value="Sweetgum, Round Lobed-Rotundiloba">Sweetgum, Round Lobed-Rotundiloba</option>';
+            Common_Name_options_str  += '<option value="Sweetgum, Variegated-Variegata">Sweetgum, Variegated-Variegata</option>';
+            Common_Name_options_str  += '<option value="Sweetgum-Autumn Glow">Sweetgum-Autumn Glow</option>';
+            Common_Name_options_str  += '<option value="Sweetgum-Moraine">Sweetgum-Moraine</option>';
+            Common_Name_options_str  += '<option value="Sweetgum-Worplesdon">Sweetgum-Worplesdon</option>';
+            Common_Name_options_str  += '<option value="Sycamore, American">Sycamore, American</option>';
+            Common_Name_options_str  += '<option value="Taiwanese Rain Tree">Taiwanese Rain Tree</option>';
+            Common_Name_options_str  += '<option value="Tree of Heaven">Tree of Heaven</option>';
+            Common_Name_options_str  += '<option value="Tuliptree">Tuliptree</option>';
+            Common_Name_options_str  += '<option value="Tuliptree, Emerald City-JFS-Oz">Tuliptree, Emerald City-JFS-Oz</option>';
+            Common_Name_options_str  += '<option value="Turkish Filbert">Turkish Filbert</option>';
+            Common_Name_options_str  += '<option value="Unknown">Unknown</option>';
+            Common_Name_options_str  += '<option value="Walnut, Black">Walnut, Black</option>';
+            Common_Name_options_str  += '<option value="Walnut, English">Walnut, English</option>';
+            Common_Name_options_str  += '<option value="Willow">Willow</option>';
+            Common_Name_options_str  += '<option value="Willow, Black">Willow, Black</option>';
+            Common_Name_options_str  += '<option value="Willow, Corkscrew-Tortuosa">Willow, Corkscrew-Tortuosa</option>';
+            Common_Name_options_str  += '<option value="Willow, Globe Navajo-Umbraculifera">Willow, Globe Navajo-Umbraculifera</option>';
+            Common_Name_options_str  += '<option value="Willow, Golden Weeping-Tristis">Willow, Golden Weeping-Tristis</option>';
+            Common_Name_options_str  += '<option value="Willow, Golden-Vitellina">Willow, Golden-Vitellina</option>';
+            Common_Name_options_str  += '<option value="Willow, Niobe Golden Weeping-Tristis">Willow, Niobe Golden Weeping-Tristis</option>';
+            Common_Name_options_str  += '<option value="Willow, Weeping">Willow, Weeping</option>';
+            Common_Name_options_str  += '<option value="Willow, Weeping or Peking-Pendula">Willow, Weeping or Peking-Pendula</option>';
+            Common_Name_options_str  += '<option value="Willow, White-Niobe">Willow, White-Niobe</option>';
+            Common_Name_options_str  += '<option value="Yellowwood">Yellowwood</option>';
+            Common_Name_options_str  += '<option value="Zelkova">Zelkova</option>';
+            Common_Name_options_str  += '<option value="Zelkova, Japanese">Zelkova, Japanese</option>';
+            Common_Name_options_str  += '<option value="Zelkova, Japanese-Green Vase">Zelkova, Japanese-Green Vase</option>';
+            Common_Name_options_str  += '<option value="Zelkova, Japanese-Village Green">Zelkova, Japanese-Village Green</option>';
+            Common_Name_options_str  += '<option value="Zelkova, Wireless Japanese-Schmidtlow">Zelkova, Wireless Japanese-Schmidtlow</option>';
+            sel_Common_Name.innerHTML = Common_Name_options_str;
+            div_Common_Name.appendChild(sel_Common_Name);
+            var lab_Common_Name = document.createElement('div');
+            lab_Common_Name.innerHTML = 'Common_Name';
+            lab_Common_Name.className = 'filterlabel';
+            div_Common_Name.appendChild(lab_Common_Name);
+            var reset_Common_Name = document.createElement('div');
+            reset_Common_Name.innerHTML = 'clear filter';
+            reset_Common_Name.className = 'filterlabel';
+            reset_Common_Name.onclick = function() {
+                var options = document.getElementById("sel_Common_Name").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Common_Name.appendChild(reset_Common_Name);
+        </script>
+    </body>
+</html>
